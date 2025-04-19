@@ -24,3 +24,4 @@ get_current_version() {
     else
 	return 1
 }
+
