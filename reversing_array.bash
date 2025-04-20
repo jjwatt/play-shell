@@ -15,3 +15,4 @@ main() {
     echo "Reversed array: ${my_array[@]}"
 }
 main "$@"
+
