@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # @file array_to_string.bash
-# @brief from bash examples
+# @brief from bash examples in the bash repo
 
 # @fn array_to_string
 # @brief Turn an array into a string with seperator
