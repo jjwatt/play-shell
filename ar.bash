@@ -3,8 +3,8 @@
 
 ## @fn ar:shift()
 ## @brief like shift, but for arrays
-## WIP
-ar::shift() {
+## @detail From the bash repo examples/ dir
+ar::shift_ramey() {
     local -a arr
     local n
 
@@ -23,7 +23,10 @@ ar::shift() {
     eval "$1"=\(\"\$\{arr\[@\]\}\"\)
 }
 
-ar::shift2() {
+## @fn ar:shift()
+## @brief like shift, but for arrays
+## @detail My version for bash 4.3+, using nameref
+ar::shift() {
     local -n arr="$1"
     local -i n
     case $# in
@@ -44,6 +47,7 @@ ar::shift2() {
 ## @fn ar::reverse()
 ## @brief Reverse array stored in arr in-place
 ## @detail My simplification of Chris Ramey's reverse from bash examples
+## For bash 4.3+, uses namerefs
 ## Usage: ar::reverse arrayname
 ar::reverse() {
     local -n arr="$1"
