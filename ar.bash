@@ -1,31 +1,13 @@
 ## @file myarray_ops.bash
 ## @brief My own interpretation of different operations on bash arrays
+##
+## @detail Some of these are based on examples in the bash repo, but
+## they're bash 4.3+ because they use namerefs and other newer
+## features of bash.
+##
 
 ## @fn ar:shift()
-## @brief like shift, but for arrays
-## @detail From the bash repo examples/ dir
-ar::shift_ramey() {
-    local -a arr
-    local n
-
-    case $# in
-	1)	n=1 ;;
-	2)	n=$2 ;;
-	*)	echo "$FUNCNAME: usage: $FUNCNAME array [count]" >&2
-		return 2;;
-    esac
-
-    # Make arr a copy of the array whose name is passed in
-    eval arr=\(\"\$\{$1\[@\]\}\"\)
-    # shift arr
-    arr=("${arr[@]:$n}")
-    
-    eval "$1"=\(\"\$\{arr\[@\]\}\"\)
-}
-
-## @fn ar:shift()
-## @brief like shift, but for arrays
-## @detail My version for bash 4.3+, using nameref
+## @brief Like shift, but for arrays
 ar::shift() {
     local -n arr="$1"
     local -i n
@@ -42,6 +24,34 @@ ar::shift() {
 	return 0
     fi
     arr=("${arr[@]:"$n"}")
+}
+
+
+## @fn ar::push()
+## @brief Appends remaining arguments to array name
+## @param arrayname The name of the array to push onto
+## @param rest val1 [val2 {...} ] Values to push onto the array
+ar::push() {
+    local -n arr="$1"
+    shift
+    arr+=("$@")
+}
+
+
+## @fn ar::pop()
+## @brief Removes and returns the last element of an array
+## @param arrayname The name of the array to pop from
+ar::pop() {
+    local -n arr="$1"
+    local -i arr_len="${#arr[@]}"
+    if (( arr_len <= 0 )); then
+	echo "" >&2
+	return 0
+    fi
+    local -i i=$((arr_len - 1))
+    local poppped="${arr[i]}"
+    arr=("${arr[@]:0:$i}")
+    echo "$popped"
 }
 
 ## @fn ar::reverse()
