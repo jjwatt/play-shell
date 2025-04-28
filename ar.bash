@@ -37,11 +37,20 @@ ar::push() {
     arr+=("$@")
 }
 
+ar::append() {
+    ar::push "$@"
+}
 
-## @fn ar::pop()
+## @fn ar::pop1()
 ## @brief Removes and returns the last element of an array
 ## @param arrayname The name of the array to pop from
-ar::pop() {
+ar::pop1() {
+    # TODO(jjwatt): Support numeric argument to pop for that index
+    (( $# != 1 )) && {
+	"$FUNCNAME: usage: $FUNCNAME arrayname"
+	return 2
+    }
+
     local -n arr="$1"
     local -i arr_len="${#arr[@]}"
     if (( arr_len <= 0 )); then
@@ -49,9 +58,59 @@ ar::pop() {
 	return 0
     fi
     local -i i=$((arr_len - 1))
-    local poppped="${arr[i]}"
+    local popped="${arr[i]}"
     arr=("${arr[@]:0:$i}")
     echo "$popped"
+}
+
+## @fn ar::pop()
+## @brief Removes and returns one element (defaults to last)
+## @detail Like Python's list pop()
+##  Usage: ar::pop array [index]
+ar::pop() {
+    (( $# < 1 )) && {
+	echo "$FUNCNAME: usage: $FUNCNAME arrayname [index]" >&2
+	return 2
+    }
+    local -n arr="$1"
+    local -i index
+    local -i arr_len="${#arr[@]}"
+    (( arr_len == 0 )) && return 1
+
+    # Determine the index to pop.
+    if [[ -z "$2" ]]; then
+	# No index provided, so pop from the end.
+	index=$((arr_len - 1))
+    else
+	index="$2"
+	# Handle negative indexing like Python.
+	if (( index < 0 )); then
+	    index=$((arr_len + index))
+	fi
+	if (( index < 0 || index >= arr_len )); then
+	    echo "Error: index out of bounds" >&2
+	    return 1
+	fi
+    fi
+    local popped="${arr[index]}"
+    local -a pre=("${arr[@]:0:$index}")
+    local -a post=("${arr[@]:$((index + 1))}")
+    arr=("${pre[@]}" "${post[@]}")
+    echo "$popped"
+}
+
+## @fn ar::extend()
+## @brief Extend the first array by appending all items from the second array
+## @detail Like Python's list.extend()
+## Usage: ar:extend array1 array2
+ar::extend() {
+    (( $# < 2 )) && {
+	echo "$FUNCNAME: usage: $FUNCNAME arrayname1 arrayname2" >&2
+	return 2
+    }
+    local -n arr="$1"
+    local -n arr2="$2"
+    arr=("${arr[@]}" "${arr2[@]}")
 }
 
 ## @fn ar::reverse()
@@ -82,7 +141,7 @@ ar::reverse() {
 # @param separator The optional separator to use. Defaults to IFS
 ar::array_to_string() {
     (( ($# < 2) || ($# > 3) )) && {
-	"$FUNCNAME: usage: $FUNCNAME arrayname stringname [seperator]"
+	echo "$FUNCNAME: usage: $FUNCNAME arrayname stringname [seperator]" >&2
 	return 2
     }
     local array=$1 string=$2
