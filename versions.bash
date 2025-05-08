@@ -8,33 +8,43 @@ get_version_parts() {
     printf "%s\n" "${parts[@]}"
 }
 
+## @fn compare_versions()
+## @brief Compare first version and second version number
+## @details Roughly follows C's cmp convention. If the first version
+## is greater than the second version return 1. If the first version
+## is less than the second version, return 2. If they'r equal,
+## return 0. Only handles 3 values. Pass 0s if you're using 2 value
+## version numbers.
+## @param first_version The first version to compare.
+## @param second_version The second version to compare.
+## @return 0 if equal, 1 if first > second, 2 if first < second.
 compare_versions() {
-    local current_version="$1"
-    local wanted_version="$2"
-    local current_version_arr=($(get_version_parts "$current_version"))
-    local wanted_version_arr=($(get_version_parts "$wanted_version"))
-    local current_major="${current_version_arr[0]}"
-    local current_minor="${current_version_arr[1]}"
-    local current_patch="${current_version_arr[2]}"
-    local wanted_major="${wanted_version_arr[0]}"
-    local wanted_minor="${wanted_version_arr[1]}"
-    local wanted_patch="${wanted_version_arr[2]}"
+    local first_version="$1"
+    local second_version="$2"
+    local first_version_arr=($(get_version_parts "$first_version"))
+    local second_version_arr=($(get_version_parts "$second_version"))
+    local first_major="${first_version_arr[0]}"
+    local first_minor="${first_version_arr[1]}"
+    local first_patch="${first_version_arr[2]}"
+    local second_major="${second_version_arr[0]}"
+    local second_minor="${second_version_arr[1]}"
+    local second_patch="${second_version_arr[2]}"
 
-    if ((current_major < wanted_major )); then
-	echo return 1
-    elif ((current_major > wanted_major)); then
-	echo "unsupported"
-    elif ((current_major == wanted_major)); then
-	if ((current_minor < wanted_minor)); then
-	    echo "normalupgrade"
-	elif ((current_minor > wanted_minor)); then
-	    echo "unsupported"
-	elif ((current_minor == wanted_minor)); then
-	    if ((current_patch < wanted_patch)); then
-		echo "normalupgrade"
-	    elif ((current_patch > wanted_patch)); then
-		echo "unsupported"
-	    elif ((current_patch == wanted_patch)); then
+    if ((first_major < second_major )); then
+	return 2
+    elif ((first_major > second_major)); then
+	return 1
+    elif ((first_major == second_major)); then
+	if ((first_minor < second_minor)); then
+	    return 2
+	elif ((first_minor > second_minor)); then
+	    return 1
+	elif ((first_minor == second_minor)); then
+	    if ((first_patch < second_patch)); then
+		return 2
+	    elif ((first_patch > second_patch)); then
+		return 1
+	    elif ((first_patch == second_patch)); then
 	        return 0
 	    fi
 	fi
