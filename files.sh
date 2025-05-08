@@ -69,3 +69,8 @@ download_single_file_with_retries() {
     done
     logError "Failed to download $remote_file after $max_retries attempts."
 }
+
+compare_versions() {
+    local current_version="$1"
+    local wanted_version="$2"
+}
