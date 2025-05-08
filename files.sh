@@ -7,8 +7,9 @@ get_current_version_string() {
     files=("$CURRENT_DIR"/*)
     shopt -u nullglob dotglob
     if [[ "${#files[@]}" -gt 0 ]]; then
-	local highest_file="$(printf "%s\n" | sort -r | sed 1q)"
-	local version_string="${highest_file##*/}"
+	local highest_file version_string
+	highest_file="$(printf "%s\n" "${files[@]}" | sort -r | sed 1q)"
+	version_string="${highest_file##*/}"
 	echo "$version_string"
 	return 0
     else
