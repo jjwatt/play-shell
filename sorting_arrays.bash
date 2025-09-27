@@ -1,7 +1,8 @@
 
 use_sort_cmd() {
     local ar=("${@}")
-    IFS=$'\n' local sorted_array=($(sort <<<"${ar[*]}"))
+    IFS=$'\n'
+    local sorted_array=($(sort <<<"${ar[*]}"))
     unset IFS
     echo "${sorted_array[@]}"
 }
