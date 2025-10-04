@@ -11,12 +11,12 @@ for (( i = 999; i >= 100; i-- )); do
 	reverse=""
 	len="${#str}"
 
-	# Build reversed string.
 	for (( idx=0; idx < len; idx++ )); do
 	    reverse="${str:$idx:1}$reverse"
 	done
 
-	if [[ $str = $reverse ]] && (( product > max_palindrome )); then
+	if [[ $str = $reverse ]] \
+	       && (( product > max_palindrome )); then
 	    max_palindrome="$product"
 	    factor1="$i"
 	    factor2="$j"
