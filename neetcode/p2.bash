@@ -16,10 +16,8 @@ is_anagram_with_sort() {
     sort1="$(sort_word "$word1")"
     sort2="$(sort_word "$word2")"
     if [[ "$sort1" == "$sort2" ]]; then
-	echo "$word2 is a valid anagram of $word1"
 	return 0
     else
-	echo "$word2 is not a valid anagram of $word1"
 	return 1
     fi
 }
@@ -42,15 +40,11 @@ is_anagram_with_hash() {
     done
     local match=0
     for key in "${!count1[@]}"; do
-	# echo "$key" "${count1[$key]}"
-	# echo "${count2[$key]}"
 	if ! [[ -v "${count2[$key]}" ]]; then
-	    # echo "Mismatch"
 	    match=1
 	    break
 	fi
 	if (( "${count1[$key]}" != "${count2[$key]}" )); then
-	    #echo "Mismatch"
 	    match=1
 	fi
     done
