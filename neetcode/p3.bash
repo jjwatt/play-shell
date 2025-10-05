@@ -20,20 +20,14 @@ two_sum() {
 
 main() {
     local input=(3 4 5 6)
-    echo "input:"
-    echo "${input[@]}"
-    echo "output:"
-    two_sum input 7
+    echo "input: (${input[*]})"
+    echo "output: $(two_sum input 7)"
     local input=(4 5 6)
-    echo "input:"
-    echo "${input[@]}"
-    echo "output:"
-    two_sum input 10
+    echo "input: (${input[*]})"
+    echo "output: $(two_sum input 10)"
     local input=(5 5)
-    echo "input:"
-    echo "${input[@]}"
-    echo "output:"
-    two_sum input 10
+    echo "input: (${input[*]})"
+    echo "output: $(two_sum input 10)"
 }
 
 main "$@"
